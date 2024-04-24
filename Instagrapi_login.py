@@ -4,17 +4,18 @@ from instagrapi import Client
 from instagrapi.extractors import extract_user_short
 import json
 import time
-
+import os
 def login_user(USERNAME, PASSWORD, cl, logger):
     """
     Attempts to login to Instagram using either the provided session information
     or the provided username and password.
     """
-    session = cl.load_settings(" ") #put the path of the session.json file here
+    session_path="" #put the path of the session.json file here
     login_via_session = False
     login_via_pw = False
 
-    if session:
+    if os.path.exists(session_path) and os.path.getsize(session_path) > 0:
+        session = cl.load_settings(session_path) 
         try:
             cl.set_settings(session)
             cl.login(USERNAME, PASSWORD)
@@ -40,17 +41,15 @@ def login_user(USERNAME, PASSWORD, cl, logger):
             
         except Exception as e:
             logger.info("Couldn't login user using username and password: %s" % e)
+            
+    if login_via_pw and os.path.exists(session_path):
+        # Save session settings
+        session = cl.get_settings()
+        with open(session_path, "w") as json_file:
+            json.dump(session, json_file)
 
     if not login_via_pw and not login_via_session:
         raise Exception("Couldn't login user with either password or session")
-
-    if login_via_pw:
-        # Save session settings
-        session = cl.get_settings()
-        with open(" ", "w") as json_file:  #put the path of the session.json file here
-            json.dump(session, json_file)
-
-
 
 def main(): #this main was created just for debugging
 
