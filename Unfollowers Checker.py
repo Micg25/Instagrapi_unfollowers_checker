@@ -1,19 +1,18 @@
 from instagrapi import Client
-from instagrapi.extractors import extract_user_short
-import json
+from instagrapi.extractors import extract_user_short 
 import time
 import os
 import Instagrapi_login as pl
-import numpy as np
 ACCOUNT_USERNAME="" #replace with your own Username
 ACCOUNT_PASSWORD="" #replace with your own Password
 cl = Client()
 logger = pl.logging.getLogger()
 pl.login_user(ACCOUNT_USERNAME, ACCOUNT_PASSWORD,cl,logger)
-time.sleep(10)
-
+time.sleep(1)
 user_id = cl.user_id_from_username(ACCOUNT_USERNAME)
-print(user_id)
+time.sleep(1)
+user_info = cl.user_info(user_id)
+follower_count = user_info.follower_count
 
 state_file = "state.txt"
 
@@ -21,7 +20,7 @@ state_file = "state.txt"
 if os.path.exists(state_file):
     users_id1=[]
     users_id2=[]
-    fw=cl.user_followers(user_id, amount = 0)
+    fw=cl.user_followers(user_id, amount = follower_count)
     for user in fw:
         users_id2.append(user)
 
@@ -41,7 +40,7 @@ if os.path.exists(state_file):
             for x in set2:
                 file.write(str(x) + "\n")
 else:
-    fw=cl.user_followers(user_id, amount = 0)
+    fw=cl.user_followers(user_id, amount = follower_count)
     users_id1=[]
     for user in fw:
         users_id1.append(user) 
