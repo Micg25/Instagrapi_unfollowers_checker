@@ -32,7 +32,7 @@ if os.path.exists(state_file):
     set2=set(users_id2)
     unfollowers= set1 - set2
     i=1
-    if len(unfollowers>0):
+    if len(unfollowers)>0:
         for x in unfollowers:
             print(f"UNFOLLOWER No {i} : {cl.username_from_user_id(x)}")
             i+=1 
